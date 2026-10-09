@@ -44,16 +44,16 @@ When you provide these fields in your CSV:
 
 ### Example 1: Single Article Without Versions
 
-For articles that don't need version tracking, simply leave `versionIdentifier` and `version` empty. You can take a look at the [single version example under Issue CSV file](../examples/issues).
+For articles that don't need version tracking, simply leave `versionIdentifier` and `version` empty. Single-version examples: [OJS 3.3](../examples/3.3/issues/single_locale_single_version.csv), [OJS 3.4](../examples/3.4/issues/single_version_issues.csv), [OJS 3.5](../examples/3.5/issues/single_locale_single_version.csv).
 
 
 ### Example 2: Multi Version Articles
 
-For article with multiple versions, you'll need to set the `versionIdentifier` and `version` fields. The `versionIdentifier` tracks the same article and the `version` handles with the article different versions. See the [multi-version example under Issue CSV file](../examples/issues).
+For article with multiple versions, you'll need to set the `versionIdentifier` and `version` fields. The `versionIdentifier` tracks the same article and the `version` handles with the article different versions. Multi-version examples: [OJS 3.3](../examples/3.3/issues/single_locale_multi_version.csv), [OJS 3.4](../examples/3.4/issues/multi_version_issues.csv), [OJS 3.5](../examples/3.5/issues/single_locale_multi_version.csv).
 
 ### Example 3: Mixed Articles
 
-You can mix single-version and multi-version articles in the same CSV file. Take a look at [mixed CSV example under the Issue CSV file](../examples/issues).
+You can mix single-version and multi-version articles in the same CSV file. Mixed examples: [OJS 3.3](../examples/3.3/issues/mixed.csv), [OJS 3.4](../examples/3.4/issues/issues_example.csv), [OJS 3.5](../examples/3.5/issues/mixed.csv).
 
 ## Important Notes
 

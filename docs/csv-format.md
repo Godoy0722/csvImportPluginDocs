@@ -4,7 +4,7 @@
 
 ## Users CSV Format
 
-A sample user CSV file is available here - [User CSV file](../examples/users/users_example.csv).
+Sample user CSV files (same columns in every version; the 3.3 and 3.5 files are identical, and 3.4 uses different row values): [OJS 3.3](../examples/3.3/users/users_example.csv), [OJS 3.4](../examples/3.4/users/users_example.csv), [OJS 3.5](../examples/3.5/users/users_example.csv).
 
 Make sure to follow this CSV structure with all headers present, including the non-required ones. It is ok for non-required fields to have no values as long as the header is present.
 
@@ -101,7 +101,7 @@ Make sure to follow this CSV structure with all headers present, including the n
 
 ## Issues CSV Format
 
-A sample issue CSV file is available here - [Issue CSV file](../examples/issues).
+Sample issue CSV files: [OJS 3.3](../examples/3.3/issues), [OJS 3.4](../examples/3.4/issues), [OJS 3.5](../examples/3.5/issues).
 
 Make sure to follow this CSV structure with all headers present, including the non-required ones. It is ok for non-required fields to have no values as long as the header is present.
 
