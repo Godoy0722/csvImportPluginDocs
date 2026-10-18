@@ -150,7 +150,7 @@ Make sure to follow this CSV structure with all headers present, including the n
 | supportingAgencies | No | Semicolon-separated supporting agencies | NSF;ESA | Localized field — provide per locale in multi-locale rows |
 | articleViews | No | Total view count for the article | 256 | Must be a non-negative integer |
 
-> **Current issue (OJS 3.4 and 3.5):** After the import, published issues are ordered by year, then volume, then number, newest first. The first issue in that order normally becomes the journal's current issue. The current issue is left unchanged when that first issue came from this import and an issue already in the journal has a later publication date than the imported issues. The issue order is still updated. The comparison uses each issue's publication date (`issuePublicationDate` for issues in the import).
+> **Current issue:** After the import, published issues are ordered by year, then volume, then number, newest first. The first issue in that order normally becomes the journal's current issue. The current issue is left unchanged when that first issue came from this import and an issue already in the journal has a later publication date than the imported issues. The issue order is still updated. The comparison uses each issue's publication date (`issuePublicationDate` for issues in the import).
 
 > **Finding your `journalPath`:** The `journalPath` is the journal's **Path** — the same value that appears in the journal's web address. You can find it in two easy ways:
 >
