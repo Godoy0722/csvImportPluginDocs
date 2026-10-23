@@ -185,15 +185,13 @@ Make sure to follow this CSV structure with all headers present, including the n
 >
 > **Multiple authors:** Separate author entries with a semicolon (`;`). A semicolon inside double quotes belongs to that author entry (for example, text in the biography).
 >
-> **Commas inside a subfield:** Wrap the subfield in double quotes so commas are not treated as subfield separators. When the whole `authors` cell is quoted in the CSV file, escape inner quotes by doubling them (`""`), as in standard CSV.
->
-> **Commas after affiliation (no quotes):** If you add extra comma-separated text after the affiliation without quoting, everything from the sixth subfield onward is **joined into biography** (with `, ` between parts). Use this for mailing addresses, departments, or other lines that are not the affiliation institution name.
+> **Commas inside a subfield:** Wrap the subfield in double quotes so commas are not treated as subfield separators. This applies to **affiliation** and **biography** (and any other subfield). Without quotes, each comma starts the next subfield; extra segments after biography are not imported. When the whole `authors` cell is quoted in the CSV file, escape inner quotes by doubling them (`""`), as in standard CSV.
 >
 > **Email:** If email is empty, the importer uses the journal's **primary contact email** for that author.
 >
-> **Affiliation:** Stored as the author affiliation name. On OJS 3.5 and later, a single institution name works best with ROR matching; put street, P.O. box, city, or country in biography (sixth subfield), or quote a multi-part affiliation if it must stay in affiliation.
+> **Affiliation:** Stored as the author affiliation name. On OJS 3.5 and later, a single institution name works best with ROR matching. If affiliation text contains commas, wrap it in double quotes.
 >
-> **Biography:** Optional. Can be quoted (commas stay inside biography) or unquoted (trailing comma-separated segments after affiliation are merged into one biography).
+> **Biography:** Optional sixth subfield. Wrap in double quotes when the text contains commas.
 >
 > Single author, all subfields:
 >
@@ -213,13 +211,11 @@ Make sure to follow this CSV structure with all headers present, including the n
 > Maria,Santos,maria@example.edu,,"Technical University of Lisbon, Department of Computer Science","Studies forecasting, including LSTM models."
 > ```
 >
-> Institution in affiliation, address lines in biography (unquoted commas after affiliation):
+> Affiliation and biography with commas (must be quoted):
 >
 > ```
-> Alex,Rivera,alex.rivera@example.edu,,Northwind Herbarium, Example University branch, P.O. Box 1000, 1000 AA Sample City, Exampleland
+> Alex,Rivera,alex.rivera@example.edu,,"Northwind Herbarium, Example University branch","P.O. Box 1000, 1000 AA Sample City, Exampleland"
 > ```
->
-> This is parsed as affiliation `Northwind Herbarium` and biography `Example University branch, P.O. Box 1000, 1000 AA Sample City, Exampleland`.
 >
 > **Skipping empty subfields**
 > If you want to set affiliation (or biography) but leave email and ORCiD empty, keep the commas for the skipped positions:
