@@ -171,37 +171,66 @@ Make sure to follow this CSV structure with all headers present, including the n
 >  - If you only need a simple table of contents, set `sectionTitle` (e.g. `Articles`) and leave `categories` empty.
 
 > **Authors Format**
-> The `authors` field in the articles CSV must contain author information in the following format:
+> The `authors` column holds one or more authors. Each author is a comma-separated list of **six subfields** in this order:
+>
+> | Position | Subfield | Required | Maps to in OJS |
+> |----------|----------|----------|----------------|
+> | 1 | Given name | Yes | Author given name |
+> | 2 | Family name | No | Author family name |
+> | 3 | Email | No | Author email |
+> | 4 | ORCiD | No | Author ORCiD |
+> | 5 | Affiliation | No | Author affiliation (institution name) |
+> | 6 | Biography | No | Author biography |
+>
+>
+> **Multiple authors:** Separate author entries with a semicolon (`;`). A semicolon inside double quotes belongs to that author entry (for example, text in the biography).
+>
+> **Commas inside a subfield:** Wrap the subfield in double quotes so commas are not treated as subfield separators. When the whole `authors` cell is quoted in the CSV file, escape inner quotes by doubling them (`""`), as in standard CSV.
+>
+> **Commas after affiliation (no quotes):** If you add extra comma-separated text after the affiliation without quoting, everything from the sixth subfield onward is **joined into biography** (with `, ` between parts). Use this for mailing addresses, departments, or other lines that are not the affiliation institution name.
+>
+> **Email:** If email is empty, the importer uses the journal's **primary contact email** for that author.
+>
+> **Affiliation:** Stored as the author affiliation name. On OJS 3.5 and later, a single institution name works best with ROR matching; put street, P.O. box, city, or country in biography (sixth subfield), or quote a multi-part affiliation if it must stay in affiliation.
+>
+> **Biography:** Optional. Can be quoted (commas stay inside biography) or unquoted (trailing comma-separated segments after affiliation are merged into one biography).
+>
+> Single author, all subfields:
 >
 > ```
-> GivenName,FamilyName,Email,ORCiD,Affiliation;GivenName2,FamilyName2,Email2,ORCiD2,Affiliation2
+> John,Doe,john@example.com,0000-0002-1825-0097,University of Example,A short bio.
 > ```
 >
->  - Fields are separated by commas within each author
->  - Multiple authors are separated by semicolons
->  - All fields except `GivenName` are optional and can be left empty
->  - If `Email` is empty, the primary contact email of the server will be used
->  - `ORCiD` must be the author identifier and is optional; see input options below
->  - For Affiliation it is recommended to only enter the institution's name. On OJS 3.5 and later, this will allow the ROR integration to make a match with the institution's name in the ROR registry.
->
-> Examples:
+> Two authors:
 >
 > ```
-> "John,Doe,john@example.com,0000-0002-1825-0097,University of Example; Jane,Smith,,https://orcid.org/0000-0002-1694-233X,Another University"
-> "Maria,Silva,maria@example.com,0000000218250097,"
-> "Carlos,,carlos@example.com,,Example Corp"
+> John,Doe,john@example.com,,University of Example;Jane,Smith,jane@example.com,0000-0002-1694-233X,Another University,
 > ```
-> 
-> **How to add author's affiliation without providing their email and/ot ORCiD**
-> If you want to provide the Affiliation field but not an earlier one (for example, Email or ORCiD), you **must** still include the commas for the empty positions. Otherwise, the importer will read your value into the wrong field.
 >
-> What you want to enter:
-> GivenName + FamilyName + Affiliation (no email, no ORCiD)
+> Affiliation and biography with commas (quoted affiliation and biography):
 >
-> How to write it: `Maria,Silva,,,University of Example` 
-> The `,,,` marks positions 3 and 4 (Email and ORCiD) as empty.
+> ```
+> Maria,Santos,maria@example.edu,,"Technical University of Lisbon, Department of Computer Science","Studies forecasting, including LSTM models."
+> ```
 >
-> _**Common mistake:**_ Writing Maria,Silva,University of Example will **not** work. The importer will read University of Example as the Email, because it sits in position 3. To place a value in the Affiliation field, you must first "skip" the > Email and ORCiD positions with commas: Maria,Silva,,,University of Example.
+> Institution in affiliation, address lines in biography (unquoted commas after affiliation):
+>
+> ```
+> Alex,Rivera,alex.rivera@example.edu,,Northwind Herbarium, Example University branch, P.O. Box 1000, 1000 AA Sample City, Exampleland
+> ```
+>
+> This is parsed as affiliation `Northwind Herbarium` and biography `Example University branch, P.O. Box 1000, 1000 AA Sample City, Exampleland`.
+>
+> **Skipping empty subfields**
+> If you want to set affiliation (or biography) but leave email and ORCiD empty, keep the commas for the skipped positions:
+>
+> ```
+> Maria,Silva,,,University of Example,
+> ```
+>
+> The `,,,` leaves email (position 3) and ORCiD (position 4) empty; `University of Example` is affiliation.
+>
+> _**Common mistake:**_ `Maria,Silva,University of Example` puts `University of Example` in the **email** field (position 3). Use `Maria,Silva,,,University of Example` instead.
 
 > **ORCiD Input Options**
 > You may provide the ORCiD in any of the following forms:
