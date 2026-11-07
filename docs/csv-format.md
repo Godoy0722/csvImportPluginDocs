@@ -125,6 +125,7 @@ Make sure to follow this CSV structure with all headers present, including the n
 | coverImageAltText | No | Alt text for cover | Journal Cover | Required if cover image used |
 | galleyFilenames | No | Semicolon-separated primary galley files | doc.docx;data.xlsx | Optional |
 | galleyLabels | No | Labels for primary galleys | DOC;XLS | Must match galleyFilenames count |
+| galleyLocales | No | Semicolon-separated locale for each primary galley | en;pt_BR | Optional. Empty uses the row `locale` for every galley. If filled, the count must match `galleyFilenames`, and each value must be a submission locale enabled in the journal. See [Galley locales](#galley-locales) |
 | galleyViews | No | Semicolon-separated view counts per galley | 120;45 | Must match galleyLabels count. Each value is a non-negative integer |
 | htmlGalley | No | Semicolon-separated HTML galley with dependent files | article.html;style.css;chart.svg | First file must be .html/.htm. See [HTML Galleys](#html-galleys) |
 | suppFilenames | No | Semicolon-separated supplementary files | supplement.pdf;data.csv | Optional |
@@ -278,6 +279,15 @@ For an import into OJS 3.3, see the [OJS 3.3 locales table](localesTable/ojs-33-
 
 These fields are not localized. The same page values apply to every locale of the article.
 
+### Galley locales
+
+`galleyLocales` sets the locale of each file in `galleyFilenames`, in the same order. On OJS 3.3 use codes such as `en_US` and `pt_BR`. On OJS 3.4 and 3.5 use `en` and `pt_BR`.
+
+- Leave the cell empty and every galley uses the row's `locale`. An empty cell is valid even when the row has several galley files.
+- When the cell is filled, provide one locale per galley file. Each locale must be enabled for submissions in the journal, the same check used for the article `locale` column.
+- The article locale and a galley locale can differ. An article with `locale` `en` and `galleyLocales` `pt_BR` is an English article with a Brazilian Portuguese galley.
+- `htmlGalley` and supplementary files are not part of this list. They use the article `locale`.
+
 ### HTML Galleys
 
 The `htmlGalley` column imports an HTML file as a galley, optionally bundled with dependent files such as CSS, JavaScript, SVGs, or images.
@@ -301,7 +311,7 @@ htmlFile.html;dependentFile1.css;dependentFile2.svg;dependentFile3.js
 htmlGalley: article.html;styles.css;chart.svg;app.js;logo.png
 ```
 
-**Combining with regular galleys:** The `htmlGalley` and `galleyFilenames` columns can both be used in the same row. When an HTML galley is present, it always receives the label `HTML`. If `galleyViews` is provided, it must include a count for the HTML galley — dependent files do not count toward the view count entries.
+**Combining with regular galleys:** The `htmlGalley` and `galleyFilenames` columns can both be used in the same row. When an HTML galley is present, it always receives the label `HTML` and the article `locale`. `galleyLocales` applies only to `galleyFilenames`. If `galleyViews` is provided, it must include a count for the HTML galley — dependent files do not count toward the view count entries.
 
 > **Known limitation:** Relative paths inside the HTML file itself (e.g., `<link href="styles.css">`) are not resolved at import time. When a reader downloads the galley, they receive the raw HTML file — there is no URL routing to serve the dependent files within the reader view.
 
