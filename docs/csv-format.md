@@ -128,6 +128,7 @@ Make sure to follow this CSV structure with all headers present, including the n
 | galleyLocales | No | Semicolon-separated locale for each primary galley | en;pt_BR | Optional. Empty uses the row `locale` for every galley. If filled, the count must match `galleyFilenames`, and each value must be a submission locale enabled in the journal. See [Galley locales](#galley-locales) |
 | galleyViews | No | Semicolon-separated view counts per galley | 120;45 | Must match galleyLabels count. Each value is a non-negative integer |
 | htmlGalley | No | Semicolon-separated HTML galley with dependent files | article.html;style.css;chart.svg | First file must be .html/.htm. See [HTML Galleys](#html-galleys) |
+| htmlGalleyLocale | No | Locale of the HTML galley | ar | Optional. One locale, not one per dependent file. Empty uses the row `locale`. Must be a submission locale enabled in the journal |
 | suppFilenames | No | Semicolon-separated supplementary files | supplement.pdf;data.csv | Optional |
 | suppLabels | No | Labels for supplementary files | Supplement;Dataset | Must match suppFilenames count |
 | suppDescriptions | No | Semicolon-separated descriptions for supplementary files | Supplementary analysis;Raw dataset (CSV) | Optional; if provided must match suppFilenames and suppLabels count |
@@ -286,7 +287,7 @@ These fields are not localized. The same page values apply to every locale of th
 - Leave the cell empty and every galley uses the row's `locale`. An empty cell is valid even when the row has several galley files.
 - When the cell is filled, provide one locale per galley file. Each locale must be enabled for submissions in the journal, the same check used for the article `locale` column.
 - The article locale and a galley locale can differ. An article with `locale` `en` and `galleyLocales` `pt_BR` is an English article with a Brazilian Portuguese galley.
-- `htmlGalley` and supplementary files are not part of this list. They use the article `locale`.
+- `htmlGalley` is not part of this list. Its locale is `htmlGalleyLocale`. Supplementary files use the article `locale`.
 
 ### HTML Galleys
 
@@ -300,7 +301,9 @@ htmlFile.html;dependentFile1.css;dependentFile2.svg;dependentFile3.js
 
 **Rules:**
 - The **first file** must be the HTML galley and must have a `.html` or `.htm` extension
-- All remaining files are treated as dependent files
+- All remaining files are treated as dependent files. They do not receive their own locale
+- `htmlGalleyLocale` sets the locale of that one HTML galley. Leave it empty to use the row's `locale`. When it is filled, it must be a single submission locale enabled in the journal, the same check used for the article `locale` column
+- The article locale and the HTML galley locale can differ. An article with `locale` `en` and `htmlGalleyLocale` `ar` is an English article whose HTML galley is Arabic, when the journal has both locales enabled for submissions
 - Files should live in the same directory as the CSV (or a subfolder), referenced via relative path from the CSV directory
   ```
   galleys/article.html;galleys/styles.css;galleys/chart.svg
@@ -311,7 +314,7 @@ htmlFile.html;dependentFile1.css;dependentFile2.svg;dependentFile3.js
 htmlGalley: article.html;styles.css;chart.svg;app.js;logo.png
 ```
 
-**Combining with regular galleys:** The `htmlGalley` and `galleyFilenames` columns can both be used in the same row. When an HTML galley is present, it always receives the label `HTML` and the article `locale`. `galleyLocales` applies only to `galleyFilenames`. If `galleyViews` is provided, it must include a count for the HTML galley — dependent files do not count toward the view count entries.
+**Combining with regular galleys:** The `htmlGalley` and `galleyFilenames` columns can both be used in the same row. The HTML galley always receives the label `HTML`. `galleyLocales` applies only to `galleyFilenames`, and `htmlGalleyLocale` applies only to the HTML galley. If `galleyViews` is provided, it must include a count for the HTML galley — dependent files do not count toward the view count entries.
 
 > **Known limitation:** Relative paths inside the HTML file itself (e.g., `<link href="styles.css">`) are not resolved at import time. When a reader downloads the galley, they receive the raw HTML file — there is no URL routing to serve the dependent files within the reader view.
 

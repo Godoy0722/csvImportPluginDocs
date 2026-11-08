@@ -75,6 +75,7 @@
      - Verify the journal path in the CSV matches exactly
      - Check that the specified locale is enabled in the journal
      - If `galleyLocales` is filled, each value must be an enabled submission locale and the number of values must match `galleyFilenames`. Leave the cell empty to use the row `locale` for every galley
+     - If `htmlGalleyLocale` is filled, it must be one enabled submission locale. Leave the cell empty to use the row `locale` for the HTML galley. Dependent files do not get their own locale
      - Ensure the journal exists and is accessible to the importing user
 
 9. **File Validation Errors**

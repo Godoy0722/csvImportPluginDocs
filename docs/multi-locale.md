@@ -61,6 +61,7 @@ The system will:
    - `startPage` and `endPage`
    - File attachments (galleys and supplementary files)
    - `galleyLocales` (the language of each galley file; an empty cell uses that row's `locale`)
+   - `htmlGalleyLocale` (the language of the HTML galley; an empty cell uses that row's `locale`)
 
 1. **Import Order**:
    - Always import the primary/default locale first
@@ -100,6 +101,7 @@ The system will:
 - Non-localized fields (DOI, dates, etc.) remain the same across all locales
 - Files (galleys, supplementary) are shared across all locales
 - A galley keeps the locale from `galleyLocales` on the row that creates it. Leave that cell empty to use the article `locale` of that row. A later locale row does not change the galley's locale
+- The HTML galley keeps the locale from `htmlGalleyLocale` on the row that creates it. Leave that cell empty to use the article `locale`. Dependent files are not given a locale
 
 
 For a comprehensive example of multi-locale articles with versions, see [OJS 3.3](../examples/3.3/issues/multi_locale_single_version.csv), [OJS 3.4](../examples/3.4/issues/comprehensive_locale_version.csv), and [OJS 3.5](../examples/3.5/issues/multi_locale_single_version.csv).
