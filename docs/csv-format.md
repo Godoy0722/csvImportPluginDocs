@@ -123,10 +123,11 @@ Make sure to follow this CSV structure with all headers present, including the n
 | doi | No | Digital Object Identifier | 10.1234/abc123 | Must be valid format |
 | coverImageFilename | No | Cover image filename | cover.jpg | Must be in same directory |
 | coverImageAltText | No | Alt text for cover | Journal Cover | Required if cover image used |
+| submissionFiles | Header required | Private files for the editorial team | notes.pdf;dataset.csv | Optional. Separate file names with semicolons. These files are not public galleys |
 | galleyFilenames | No | Semicolon-separated primary galley files | doc.docx;data.xlsx | Optional |
 | galleyLabels | No | Labels for primary galleys | DOC;XLS | Must match galleyFilenames count |
 | galleyLocales | No | Semicolon-separated locale for each primary galley | en;pt_BR | Optional. Empty uses the row `locale` for every galley. If filled, the count must match `galleyFilenames`, and each value must be a submission locale enabled in the journal. See [Galley locales](#galley-locales) |
-| galleyViews | No | Semicolon-separated view counts per galley | 120;45 | Must match galleyLabels count. Each value is a non-negative integer |
+| galleyViews | No | Semicolon-separated view counts per galley | 120;45 | Must match galleyLabels count. Each value is a non-negative integer. These counts are saved only for a published article |
 | htmlGalley | No | Semicolon-separated HTML galley with dependent files | article.html;style.css;chart.svg | First file must be .html/.htm. See [HTML Galleys](#html-galleys) |
 | htmlGalleyLocale | No | Locale of the HTML galley | ar | Optional. One locale, not one per dependent file. Empty uses the row `locale`. Must be a submission locale enabled in the journal |
 | suppFilenames | No | Semicolon-separated supplementary files | supplement.pdf;data.csv | Optional |
@@ -140,7 +141,8 @@ Make sure to follow this CSV structure with all headers present, including the n
 | issueYear | No | Publication year | 2024 | |
 | issueDescription | No | Issue description | Special Edition | Optional |
 | issuePublicationDate | No | Issue publication date | 2024-01-01 | Format: YYYY-MM-DD. When provided, sets the issue's publication date. Defaults to the import date if left empty |
-| datePublished | Yes | Article publication date | 2024-01-15 | Format: YYYY-MM-DD |
+| submissionStatus | Header required | Whether readers can see the article | published | Leave empty to publish the article. See [Article status](#article-status) |
+| datePublished | Yes | Article date | 2024-01-15 | Format: YYYY-MM-DD. Required for version 1. The same cell is used differently for each article status. See [Article status](#article-status) |
 | startPage | No | First page | 1 | See [Pages](#pages) |
 | endPage | No | Last page | 15 | Optional. See [Pages](#pages) |
 | copyrightYear | No | Copyright year | 2025 | Left empty if not provided |
@@ -150,7 +152,18 @@ Make sure to follow this CSV structure with all headers present, including the n
 | username | No | Username of the submission author for this row | jdoe | Overrides the CLI/web user as the submission's assigned user. Must exist in the system |
 | funders | No | Semicolon-separated funder data | See [Funders Format](#funders-format) | Requires the Funding plugin to be enabled in the journal |
 | supportingAgencies | No | Semicolon-separated supporting agencies | NSF;ESA | Localized field — provide per locale in multi-locale rows |
-| articleViews | No | Total view count for the article | 256 | Must be a non-negative integer |
+| articleViews | No | Total view count for the article | 256 | Must be a non-negative integer. This count is saved only for a published article |
+
+### Article status
+
+`datePublished` is required for every article. What that date means depends on `submissionStatus`:
+
+- **Published**, or an empty status: readers can see the article on its issue. `datePublished` is the date the article was published, and it is also the date the article was submitted. `articleViews` and `galleyViews` are saved.
+- **Queued**: the article stays in the editorial workflow. Readers do not see it. The issue remains selected on the article. `datePublished` is saved only as the date the article was submitted. The article has no publication date. `articleViews` and `galleyViews` are ignored, and the row is still imported.
+- **Scheduled**: same as queued for readers, for `datePublished`, and for those ignored view counts. The article is marked scheduled for its issue.
+- Any other word is rejected. That row is listed in the invalid CSV with the status error. The other rows in the file are still imported.
+- An issue that contains a published article stays a public issue, and only its published articles appear on the public table of contents.
+- An issue with no published article stays a future issue.
 
 > **Current issue:** After the import, published issues are ordered by year, then volume, then number, newest first. The first issue in that order normally becomes the journal's current issue. The current issue is left unchanged when that first issue came from this import and an issue already in the journal has a later publication date than the imported issues. The issue order is still updated. The comparison uses each issue's publication date (`issuePublicationDate` for issues in the import).
 

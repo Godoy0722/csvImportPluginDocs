@@ -14,7 +14,7 @@ The multiversion system uses two key fields to manage article versions:
 When you provide these fields in your CSV:
 1. Articles with the same `versionIdentifier` are treated as different versions of the same submission
 2. Each version can have updated content, metadata, or files
-3. The system automatically sets the highest version number as the current published version
+3. Readers see the latest published version. When no version is published, the editorial workflow opens the latest version
 4. All versions remain accessible in the system's version history
 
 ## Version Management Rules
@@ -31,14 +31,13 @@ When you provide these fields in your CSV:
    - Version 1 is always the initial/base version
 
 3. **Required Fields**:
-   - **Version 1** must include ALL required fields: `articleTitle`, `authors`, `datePublished`, etc.
+   - **Version 1** must include the required fields: `articleTitle`, `authors`, and `datePublished`. `datePublished` is the publication date when that version is published, and the submission date when that version is queued or scheduled
    - **Versions > 1** can include only the fields you want to update (partial updates)
-   - Fields not provided in higher versions inherit values from the previous version
+   - Fields not provided in higher versions inherit values from the previous version. A queued or scheduled version does not inherit a publication date. The date on the first row is the date the article was submitted
 
 4. **Automatic Current Version**:
-   - After import, the system automatically sets the highest version as "current"
+   - Readers see the latest published version. When no version is published, the editorial workflow opens the latest version
    - All other versions remain in the system as historical versions
-   - Readers will see the highest version by default
 
 ## Practical Examples
 

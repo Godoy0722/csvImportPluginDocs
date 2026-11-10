@@ -110,7 +110,16 @@
      - Ensure each version number is unique within the same article
      - Remove duplicate entries from your CSV file
 
-12. **References File Issues**
+12. **Article status**
+   - Error: `Unknown article status`
+   - Solution:
+     - Use `published`, `queued`, or `scheduled` in `submissionStatus`
+     - Leave the cell empty to publish the article
+     - `datePublished` is required for a published, queued, or scheduled article. On a queued or scheduled row that date is the date the article was submitted, and the article has no publication date
+     - A view count on a queued or scheduled row is not an error. It is ignored and the row is still imported
+     - A value that is not a real date is an error on every row
+
+13. **References File Issues**
    - Error: `Invalid references file: [filename]`
    - Solution:
      - Verify the references file exists in the same directory as the CSV file
