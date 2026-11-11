@@ -25,79 +25,101 @@ Make sure to follow this CSV structure with all headers present, including the n
 | endDate | If subscriptionType is set | Subscription end date (YYYY-MM-DD) | 2023-12-31 | Yes
 | orcid | No | User's ORCID identifier | 0000-0002-1825-0097 | Yes
 
-> **Finding your `journalPath`:** The `journalPath` is the journal's **Path** — the same value that appears in the journal's web address. You can find it in two easy ways:
->
->  1. **From the URL:** Open the journal in your browser and look at the address bar. The path is the segment that identifies the journal in the URL — for example, in `https://example.com/index.php/leo/...` the `journalPath` is `leo`.
->  2. **From the admin area:** Go to **Administration → Hosted Journals**. The list shows a **Path** column next to each journal's name — use that exact value.
->
->  - The journal must already exist in OJS; the importer does not create journals.
+### Finding your journalPath
 
-> **Country Code:**  Look for the Country in the following [file](https://github.com/sokil/php-isocodes-db-only/blob/4.0/databases/iso_3166-1.json) and use the two letter-code listed beside 'alpha_2'
+The `journalPath` is the journal's **Path** — the same value that appears in the journal's web address. You can find it in two easy ways:
 
-> **Username:** For **new users**, you can enter a username in the CSV. If you don't, one will be generated automatically upon import. A `username` should not be the same as the `email`. For **existing users** (matched by email), the username is never changed.
+1. **From the URL:** Open the journal in your browser and look at the address bar. The path is the segment that identifies the journal in the URL — for example, in `https://example.com/index.php/leo/...` the `journalPath` is `leo`.
+2. **From the admin area:** Go to **Administration → Hosted Journals**. The list shows a **Path** column next to each journal's name — use that exact value.
 
-> **tempPassword:** For **new users**, you can enter a temporary password in the CSV. If you don't, one will be generated automatically upon import. If this password is shared with imported users outside of OJS, those users will be able to log in using `tempPassword`. Upon first login, they will be prompted to update their password to their own password preference. For **existing users**, `tempPassword` is ignored — passwords cannot be changed via CSV import.
+- The journal must already exist in OJS; the importer does not create journals.
 
-> **Roles:** At least one role is mandatory. Fill this field with the role names from the journal's primary locale, even when the journal has more than one language. The importer matches those names only against the primary locale, so a translation used in another language will not be recognized. For the list of default available roles in OJS to select from, navigate to Users & Roles > Roles in your OJS journal or see the reference in the [Learning OJS Guide: Getting to Know Permissions and Role](https://docs.pkp.sfu.ca/learning-ojs/journal-managers/en/users#permissions-roles). Include at least the "Reader" role on each account, written as it appears in the journal's primary locale. That role is the minimum permission level granted to all users.
+### Country code
 
-> **Subscription Types (`subscriptionType`, `startDate`, `endDate`):** The `subscriptionType` column expects the numeric ID of a subscription type that already exists in your journal. Subscription types define the paid access plans readers can purchase — each type has a name, cost, currency, duration, and format (Online, Print, or Print + Online).
->
-> **Finding your Subscription Type ID:**
->
->  1. **From the admin area:** Go to **Payments → Subscription Types** (requires Manager, Site Admin, or Subscription Manager permissions). The page lists all subscription types for your journal. Click the edit button next to the type you want — the edit form opens. Look at your browser's address bar: you'll see a `typeId` parameter like `.../editSubscriptionType?typeId=3`. That number is your `subscriptionType`.
->
->  2. **From the database:** If you have database access, you can query the `subscription_types` table directly:
->     ```sql
->     SELECT type_id, cost, currency_code_alpha, duration, format
->     FROM subscription_types
->     WHERE journal_id = <your-journal-id>
->     ORDER BY seq;
->     ```
->
-> Notes:
->  - If the ID you provide doesn't exist for that journal, the row is rejected.
->  - Leave `subscriptionType` empty if the user should not receive a subscription.
->  - When `subscriptionType` is provided, `startDate` and `endDate` **must also be provided** (format: `YYYY-MM-DD`). All three or none.
+Look for the Country in the following [file](https://github.com/sokil/php-isocodes-db-only/blob/4.0/databases/iso_3166-1.json) and use the two letter-code listed beside 'alpha_2'.
 
-> **User Interests:** User interests in the users CSV use a semicolon-separated format:
->
-> ```
-> interest one; interest two; another interest
-> ```
->
->  - Leading/trailing spaces are automatically trimmed
->  - Empty values are ignored
->  - Each interest will be associated with the created user's profile
->
+### Username
 
-> **ORCID:** The ORCID field accepts multiple formats and will be automatically normalized to the standard URL format:
->
-> Accepted formats:
->  - **Full URL**: `https://orcid.org/0000-0002-1825-0097` or `https://sandbox.orcid.org/0000-0002-1825-0097`
->  - **Dashed format**: `0000-0002-1825-0097`
->  - **Numeric format**: `0000000218250097`
->
-> Notes:
->  - The last character can be a digit (0-9) or the letter X (checksum character)
->  - The ORCID checksum is validated during import
->  - Invalid ORCIDs will cause the row to be rejected
->  - Leave empty if the user doesn't have an ORCID
->  - ORCID iDs imported in this manner will appear as “unauthenticated” on the article landing pages. If the ORCID integration is enabled, these ORCID iDs will need to be either authenticated or deleted in order for the article or version to be published.
->
-> Examples:
->
-> ```
-> https://orcid.org/0000-0002-1825-0097
-> 0000-0001-5109-3700
-> 0000000256781235
-> ```
+For **new users**, you can enter a username in the CSV. If you don't, one will be generated automatically upon import. A `username` should not be the same as the `email`. For **existing users** (matched by email), the username is never changed.
 
-> **Updating user data via a CSV upload:**
-> It is possible to update certain data for existing OJS users by uploading a CSV via this tool. Specific fields that can be updated are indicated in the table above.
-> To make such an update:
->   -  Prepare a CSV file following the above format.
->   -  Ensure the existing email is listed for each existing user - this is how the system will identify the user to be updated. For the other fields, only include the values for the fields you want updated, keep the other fields empty.
->   -  Username, password (`tempPassword`), and roles are never changed during an update — even if those columns contain values. Only new users receive a username, password, and role assignments. To reset a password for an existing user, use the OJS user management interface instead.
+### Temporary password
+
+For **new users**, you can enter a temporary password in the CSV. If you don't, one will be generated automatically upon import. If this password is shared with imported users outside of OJS, those users will be able to log in using `tempPassword`. Upon first login, they will be prompted to update their password to their own password preference. For **existing users**, `tempPassword` is ignored — passwords cannot be changed via CSV import.
+
+### Roles
+
+At least one role is mandatory. Fill this field with the role names from the journal's primary locale, even when the journal has more than one language. The importer matches those names only against the primary locale, so a translation used in another language will not be recognized. For the list of default available roles in OJS to select from, navigate to Users & Roles > Roles in your OJS journal or see the reference in the [Learning OJS Guide: Getting to Know Permissions and Role](https://docs.pkp.sfu.ca/learning-ojs/journal-managers/en/users#permissions-roles). Include at least the "Reader" role on each account, written as it appears in the journal's primary locale. That role is the minimum permission level granted to all users.
+
+### Subscription types
+
+The `subscriptionType` column expects the numeric ID of a subscription type that already exists in your journal. Subscription types define the paid access plans readers can purchase — each type has a name, cost, currency, duration, and format (Online, Print, or Print + Online).
+
+#### Finding your subscription type ID
+
+1. **From the admin area:** Go to **Payments → Subscription Types** (requires Manager, Site Admin, or Subscription Manager permissions). The page lists all subscription types for your journal. Click the edit button next to the type you want — the edit form opens. Look at your browser's address bar: you'll see a `typeId` parameter like `.../editSubscriptionType?typeId=3`. That number is your `subscriptionType`.
+
+2. **From the database:** If you have database access, you can query the `subscription_types` table directly:
+
+```sql
+SELECT type_id, cost, currency_code_alpha, duration, format
+FROM subscription_types
+WHERE journal_id = <your-journal-id>
+ORDER BY seq;
+```
+
+Notes:
+
+- If the ID you provide doesn't exist for that journal, the row is rejected.
+- Leave `subscriptionType` empty if the user should not receive a subscription.
+- When `subscriptionType` is provided, `startDate` and `endDate` **must also be provided** (format: `YYYY-MM-DD`). All three or none.
+
+### User interests
+
+User interests in the users CSV use a semicolon-separated format:
+
+```
+interest one; interest two; another interest
+```
+
+- Leading/trailing spaces are automatically trimmed
+- Empty values are ignored
+- Each interest will be associated with the created user's profile
+
+### ORCID
+
+The ORCID field accepts multiple formats and will be automatically normalized to the standard URL format.
+
+Accepted formats:
+
+- **Full URL**: `https://orcid.org/0000-0002-1825-0097` or `https://sandbox.orcid.org/0000-0002-1825-0097`
+- **Dashed format**: `0000-0002-1825-0097`
+- **Numeric format**: `0000000218250097`
+
+Notes:
+
+- The last character can be a digit (0-9) or the letter X (checksum character)
+- The ORCID checksum is validated during import
+- Invalid ORCIDs will cause the row to be rejected
+- Leave empty if the user doesn't have an ORCID
+- ORCID iDs imported in this manner will appear as “unauthenticated” on the article landing pages. If the ORCID integration is enabled, these ORCID iDs will need to be either authenticated or deleted in order for the article or version to be published.
+
+Examples:
+
+```
+https://orcid.org/0000-0002-1825-0097
+0000-0001-5109-3700
+0000000256781235
+```
+
+### Updating user data
+
+It is possible to update certain data for existing OJS users by uploading a CSV via this tool. Specific fields that can be updated are indicated in the table above.
+
+To make such an update:
+
+- Prepare a CSV file following the above format.
+- Ensure the existing email is listed for each existing user - this is how the system will identify the user to be updated. For the other fields, only include the values for the fields you want updated, keep the other fields empty.
+- Username, password (`tempPassword`), and roles are never changed during an update — even if those columns contain values. Only new users receive a username, password, and role assignments. To reset a password for an existing user, use the OJS user management interface instead.
 
 ## Issues CSV Format
 
@@ -164,119 +186,158 @@ Make sure to follow this CSV structure with all headers present, including the n
 - An issue that contains a published article stays a public issue, and only its published articles appear on the public table of contents.
 - An issue with no published article stays a future issue.
 
-> **Current issue:** After the import, published issues are ordered by year, then volume, then number, newest first. The first issue in that order normally becomes the journal's current issue. The current issue is left unchanged when that first issue came from this import and an issue already in the journal has a later publication date than the imported issues. The issue order is still updated. The comparison uses each issue's publication date (`issuePublicationDate` for issues in the import).
+### Current issue
 
-> **Finding your `journalPath`:** The `journalPath` is the journal's **Path** — the same value that appears in the journal's web address. You can find it in two easy ways:
->
->  1. **From the URL:** Open the journal in your browser and look at the address bar. The path is the segment that identifies the journal in the URL — for example, in `https://example.com/index.php/leo/...` the `journalPath` is `leo`.
->  2. **From the admin area:** Go to **Administration → Hosted Journals**. The list shows a **Path** column next to each journal's name — use that exact value.
->
->  - The journal must already exist in OJS; the importer does not create journals.
+After the import, published issues are ordered by year, then volume, then number, newest first. The first issue in that order normally becomes the journal's current issue. The current issue is left unchanged when that first issue came from this import and an issue already in the journal has a later publication date than the imported issues. The issue order is still updated. The comparison uses each issue's publication date (`issuePublicationDate` for issues in the import).
 
-> **DOIs (`doi` column):** Only fill in this column if the article was **already published with a DOI assigned to it** (for example, it was previously hosted on another platform that minted the DOI). Enter that existing DOI exactly as it was registered.
->
->  - If your journal does **not** yet use DOIs and you are just starting out, **leave this column empty**. After migration you can enable and configure DOIs under **Settings → Distribution** (set your DOI prefix and pattern there), then open the **DOIs** page in the main menu and use its bulk **Assign** action to **batch-assign DOIs** to your articles at once. Letting OJS generate them keeps your DOIs consistent and avoids duplicates.
->  - Do **not** invent DOIs to fill the column — an unregistered DOI will not resolve.
+### Finding your journalPath
 
-> **Sections & Categories:** These describe how your content is organized in the journal. If a section or category named here does not exist yet, the importer creates it for you.
->
->  - **`sectionTitle` / `sectionAbbrev`** — Sections are the divisions a journal uses to organize an issue's table of contents (for example `Articles`). You can see and manage your journal's sections under **Settings → Journal → Sections**. If the `sectionTitle` you provide does not match an existing section, the importer creates a new one, using `sectionAbbrev` as its abbreviation.
->  - **`categories`** — Categories are an optional way to group submissions across the journal. You can see and manage them under **Settings → Journal → Categories**. Provide one or more as a semicolon-separated list; any category that does not exist yet is created during import.
->  - If you only need a simple table of contents, set `sectionTitle` (e.g. `Articles`) and leave `categories` empty.
+The `journalPath` is the journal's **Path** — the same value that appears in the journal's web address. You can find it in two easy ways:
 
-> **Authors Format**
-> The `authors` column holds one or more authors. Each author is a comma-separated list of **six subfields** in this order:
->
-> | Position | Subfield | Required | Maps to in OJS |
-> |----------|----------|----------|----------------|
-> | 1 | Given name | Yes | Author given name |
-> | 2 | Family name | No | Author family name |
-> | 3 | Email | No | Author email |
-> | 4 | ORCiD | No | Author ORCiD |
-> | 5 | Affiliation | No | Author affiliation (institution name) |
-> | 6 | Biography | No | Author biography |
->
->
-> **Multiple authors:** Separate author entries with a semicolon (`;`). A semicolon inside double quotes belongs to that author entry (for example, text in the biography).
->
-> **Commas inside a subfield:** Wrap the subfield in double quotes so commas are not treated as subfield separators. This applies to **affiliation** and **biography** (and any other subfield). Without quotes, each comma starts the next subfield; extra segments after biography are not imported. When the whole `authors` cell is quoted in the CSV file, escape inner quotes by doubling them (`""`), as in standard CSV.
->
-> **Email:** If email is empty, the importer uses the journal's **primary contact email** for that author.
->
-> **Affiliation:** Stored as the author affiliation name. On OJS 3.5 and later, a single institution name works best with ROR matching. If affiliation text contains commas, wrap it in double quotes.
->
-> **Biography:** Optional sixth subfield. Wrap in double quotes when the text contains commas.
->
-> Single author, all subfields:
->
-> ```
-> John,Doe,john@example.com,0000-0002-1825-0097,University of Example,A short bio.
-> ```
->
-> Two authors:
->
-> ```
-> John,Doe,john@example.com,,University of Example;Jane,Smith,jane@example.com,0000-0002-1694-233X,Another University,
-> ```
->
-> Affiliation and biography with commas (quoted affiliation and biography):
->
-> ```
-> Maria,Santos,maria@example.edu,,"Technical University of Lisbon, Department of Computer Science","Studies forecasting, including LSTM models."
-> ```
->
-> Affiliation and biography with commas (must be quoted):
->
-> ```
-> Alex,Rivera,alex.rivera@example.edu,,"Northwind Herbarium, Example University branch","P.O. Box 1000, 1000 AA Sample City, Exampleland"
-> ```
->
-> **Skipping empty subfields**
-> If you want to set affiliation (or biography) but leave email and ORCiD empty, keep the commas for the skipped positions:
->
-> ```
-> Maria,Silva,,,University of Example,
-> ```
->
-> The `,,,` leaves email (position 3) and ORCiD (position 4) empty; `University of Example` is affiliation.
->
-> _**Common mistake:**_ `Maria,Silva,University of Example` puts `University of Example` in the **email** field (position 3). Use `Maria,Silva,,,University of Example` instead.
+1. **From the URL:** Open the journal in your browser and look at the address bar. The path is the segment that identifies the journal in the URL — for example, in `https://example.com/index.php/leo/...` the `journalPath` is `leo`.
+2. **From the admin area:** Go to **Administration → Hosted Journals**. The list shows a **Path** column next to each journal's name — use that exact value.
 
-> **ORCiD Input Options**
-> You may provide the ORCiD in any of the following forms:
->  - Full URL: `https://orcid.org/0000-0002-1825-0097`
->  - Hyphenated ID: `0000-0002-1825-0097`
->  - Digits only: `0000000218250097`
->
-> Notes:
->  - The system normalizes the value to the canonical URL form `https://orcid.org/0000-0000-0000-0000`
->  - The last character may be `X` (checksum), e.g., `0000-0002-1694-233X`
->  - Invalid formats are ignored without blocking the import
+- The journal must already exist in OJS; the importer does not create journals.
 
-> **Funders Format**
-> The `funders` field accepts a semicolon-separated list of funders. Each funder uses commas to separate its fields, and a pipe character (`|`) to separate multiple awards for the same funder:
->
-> ```
-> FunderName,FunderIdentification,Award1|Award2;FunderName2,FunderIdentification2,Award3
-> ```
->
->  - Funders are separated by `;`
->  - Funder fields are separated by `,`
->  - Multiple awards for the same funder are separated by `|`
->  - `FunderName` is required; `FunderIdentification` and awards are optional
->
-> Examples:
->
-> ```
-> "National Science Foundation,https://doi.org/10.13039/100000001,NSF-1234|NSF-5678"
-> "European Space Agency,https://doi.org/10.13039/501100000844,"
-> "Some Funder,,"
-> ```
->
-> Validation:
->  - The Funding plugin must be enabled in the journal — rows with funder data are rejected otherwise
->  - When the Funding plugin's `enableGrantIdValidation` setting is on, each `FunderIdentification` (when provided) must be a Crossref Funder Registry DOI matching `https://doi.org/10.13039/...`
->  - Rows that fail funder validation are written to the `invalid_*.csv` file
+### DOIs
+
+Only fill in the `doi` column if the article was **already published with a DOI assigned to it** (for example, it was previously hosted on another platform that minted the DOI). Enter that existing DOI exactly as it was registered.
+
+- If your journal does **not** yet use DOIs and you are just starting out, **leave this column empty**. After migration you can enable and configure DOIs under **Settings → Distribution** (set your DOI prefix and pattern there), then open the **DOIs** page in the main menu and use its bulk **Assign** action to **batch-assign DOIs** to your articles at once. Letting OJS generate them keeps your DOIs consistent and avoids duplicates.
+- Do **not** invent DOIs to fill the column — an unregistered DOI will not resolve.
+
+### Sections and categories
+
+These describe how your content is organized in the journal. If a section or category named here does not exist yet, the importer creates it for you.
+
+- **`sectionTitle` / `sectionAbbrev`** — Sections are the divisions a journal uses to organize an issue's table of contents (for example `Articles`). You can see and manage your journal's sections under **Settings → Journal → Sections**. If the `sectionTitle` you provide does not match an existing section, the importer creates a new one, using `sectionAbbrev` as its abbreviation.
+- **`categories`** — Categories are an optional way to group submissions across the journal. You can see and manage them under **Settings → Journal → Categories**. Provide one or more as a semicolon-separated list; any category that does not exist yet is created during import.
+- If you only need a simple table of contents, set `sectionTitle` (e.g. `Articles`) and leave `categories` empty.
+
+### Authors Format
+
+The `authors` column holds one or more authors. Each author is a comma-separated list of **six subfields** in this order:
+
+| Position | Subfield | Required | Maps to in OJS |
+|----------|----------|----------|----------------|
+| 1 | Given name | Yes | Author given name |
+| 2 | Family name | No | Author family name |
+| 3 | Email | No | Author email |
+| 4 | ORCiD | No | Author ORCiD |
+| 5 | Affiliation | No | Author affiliation (institution name) |
+| 6 | Biography | No | Author biography |
+
+#### Multiple authors
+
+Separate author entries with a semicolon (`;`). A semicolon inside double quotes belongs to that author entry (for example, text in the biography).
+
+#### Commas inside a subfield
+
+Wrap the subfield in double quotes so commas are not treated as subfield separators. This applies to **affiliation** and **biography** (and any other subfield). Without quotes, each comma starts the next subfield; extra segments after biography are not imported. When the whole `authors` cell is quoted in the CSV file, escape inner quotes by doubling them (`""`), as in standard CSV.
+
+#### Email
+
+If email is empty, the importer uses the journal's **primary contact email** for that author.
+
+#### Affiliation
+
+The affiliation subfield is the institution named on the author. One institution is a single name. If that name contains commas, wrap the affiliation in double quotes.
+
+#### Multiple affiliations
+
+When an author belongs to more than one institution, list every institution in the same affiliation subfield and separate them with `|`. Quote the affiliation when any institution name contains a comma.
+
+```
+E.M.,Joyce,,,"Faculty of Biology, Ludwig-Maximilians-Universität München, 80638 Germany|Australian Tropical Herbarium, James Cook University, Cairns 4870, Queensland, Australia"
+```
+
+What you see after the import depends on the OJS version:
+
+- **OJS 3.5:** Each institution is added as its own affiliation. When you edit the contributor, you see one row per institution. A recognized institution name can be linked to that institution's record.
+- **OJS 3.3 and 3.4:** An author has one affiliation box. The same list stays in that box, with a semicolon between institutions instead of `|`.
+
+An affiliation with no `|` is stored as that one institution on every version.
+
+#### Biography
+
+Optional sixth subfield. Wrap in double quotes when the text contains commas.
+
+Single author, all subfields:
+
+```
+John,Doe,john@example.com,0000-0002-1825-0097,University of Example,A short bio.
+```
+
+Two authors:
+
+```
+John,Doe,john@example.com,,University of Example;Jane,Smith,jane@example.com,0000-0002-1694-233X,Another University,
+```
+
+Affiliation and biography with commas (quoted affiliation and biography):
+
+```
+Maria,Santos,maria@example.edu,,"Technical University of Lisbon, Department of Computer Science","Studies forecasting, including LSTM models."
+```
+
+Affiliation and biography with commas (must be quoted):
+
+```
+Alex,Rivera,alex.rivera@example.edu,,"Northwind Herbarium, Example University branch","P.O. Box 1000, 1000 AA Sample City, Exampleland"
+```
+
+#### Skipping empty subfields
+
+If you want to set affiliation (or biography) but leave email and ORCiD empty, keep the commas for the skipped positions:
+
+```
+Maria,Silva,,,University of Example,
+```
+
+The `,,,` leaves email (position 3) and ORCiD (position 4) empty; `University of Example` is affiliation.
+
+**Common mistake:** `Maria,Silva,University of Example` puts `University of Example` in the **email** field (position 3). Use `Maria,Silva,,,University of Example` instead.
+
+### ORCiD input options
+
+You may provide the ORCiD in any of the following forms:
+
+- Full URL: `https://orcid.org/0000-0002-1825-0097`
+- Hyphenated ID: `0000-0002-1825-0097`
+- Digits only: `0000000218250097`
+
+Notes:
+
+- The system normalizes the value to the canonical URL form `https://orcid.org/0000-0000-0000-0000`
+- The last character may be `X` (checksum), e.g., `0000-0002-1694-233X`
+- Invalid formats are ignored without blocking the import
+
+### Funders Format
+
+The `funders` field accepts a semicolon-separated list of funders. Each funder uses commas to separate its fields, and a pipe character (`|`) to separate multiple awards for the same funder:
+
+```
+FunderName,FunderIdentification,Award1|Award2;FunderName2,FunderIdentification2,Award3
+```
+
+- Funders are separated by `;`
+- Funder fields are separated by `,`
+- Multiple awards for the same funder are separated by `|`
+- `FunderName` is required; `FunderIdentification` and awards are optional
+
+Examples:
+
+```
+"National Science Foundation,https://doi.org/10.13039/100000001,NSF-1234|NSF-5678"
+"European Space Agency,https://doi.org/10.13039/501100000844,"
+"Some Funder,,"
+```
+
+Validation:
+
+- The Funding plugin must be enabled in the journal — rows with funder data are rejected otherwise
+- When the Funding plugin's `enableGrantIdValidation` setting is on, each `FunderIdentification` (when provided) must be a Crossref Funder Registry DOI matching `https://doi.org/10.13039/...`
+- Rows that fail funder validation are written to the `invalid_*.csv` file
 
 ### Locales
 
@@ -312,25 +373,32 @@ htmlFile.html;dependentFile1.css;dependentFile2.svg;dependentFile3.js
 ```
 
 **Rules:**
+
 - The **first file** must be the HTML galley and must have a `.html` or `.htm` extension
 - All remaining files are treated as dependent files. They do not receive their own locale
 - `htmlGalleyLocale` sets the locale of that one HTML galley. Leave it empty to use the row's `locale`. When it is filled, it must be a single submission locale enabled in the journal, the same check used for the article `locale` column
 - The article locale and the HTML galley locale can differ. An article with `locale` `en` and `htmlGalleyLocale` `ar` is an English article whose HTML galley is Arabic, when the journal has both locales enabled for submissions
 - Files should live in the same directory as the CSV (or a subfolder), referenced via relative path from the CSV directory
-  ```
-  galleys/article.html;galleys/styles.css;galleys/chart.svg
-  ```
+
+```
+galleys/article.html;galleys/styles.css;galleys/chart.svg
+```
 
 **Example:**
+
 ```
 htmlGalley: article.html;styles.css;chart.svg;app.js;logo.png
 ```
 
 **Combining with regular galleys:** The `htmlGalley` and `galleyFilenames` columns can both be used in the same row. The HTML galley always receives the label `HTML`. `galleyLocales` applies only to `galleyFilenames`, and `htmlGalleyLocale` applies only to the HTML galley. If `galleyViews` is provided, it must include a count for the HTML galley — dependent files do not count toward the view count entries.
 
-> **Known limitation:** Relative paths inside the HTML file itself (e.g., `<link href="styles.css">`) are not resolved at import time. When a reader downloads the galley, they receive the raw HTML file — there is no URL routing to serve the dependent files within the reader view.
+#### Known limitation
 
-> **Dependent file types:** Any file type is accepted for dependent files (CSS, SVG, PNG, JPEG, JS, fonts, etc.). Only the first file is required to be `.html` or `.htm`.
+Relative paths inside the HTML file itself (e.g., `<link href="styles.css">`) are not resolved at import time. When a reader downloads the galley, they receive the raw HTML file — there is no URL routing to serve the dependent files within the reader view.
+
+#### Dependent file types
+
+Any file type is accepted for dependent files (CSS, SVG, PNG, JPEG, JS, fonts, etc.). Only the first file is required to be `.html` or `.htm`.
 
 ## Import File Structure
 
@@ -348,6 +416,7 @@ import_directory/
 ├── supplementary_data.csv
 ├── cover.jpg
 ```
+
 If you put files inside a subfolder, you will need to make sure that the CSV points to the file's relative path (e.g., <em>galleys/article.pdf</em>).
 
 For user imports, you can upload a single CSV file directly without zipping. If you have multiple CSV files, bundle them into a ZIP archive following the same structure rules described above.
