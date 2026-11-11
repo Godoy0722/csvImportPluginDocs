@@ -39,7 +39,6 @@ The system will:
    - `articleTitle`
    - `articleSubtitle`
    - `articleAbstract`
-   - `articlePrefix`
    - `coverage`
    - `copyrightHolder`
    - `keywords`

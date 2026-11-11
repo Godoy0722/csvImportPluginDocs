@@ -111,7 +111,6 @@ Make sure to follow this CSV structure with all headers present, including the n
 | locale | Yes | Article locale | en_US / en | `en_US` for OJS 3.3; `en` for OJS 3.4 and 3.5. Must be enabled in the journal |
 | versionIdentifier | No | Unique identifier for article versions | article-001 | Links versions together. Leave empty for single-version articles |
 | version | No | Version number | 1 | Required if versionIdentifier is provided. Must be positive integer |
-| articlePrefix | No | Article prefix | The | Optional |
 | articleTitle | Yes | Article title | My Research Paper | Required for version 1, optional for versions > 1 |
 | articleSubtitle | No | Article subtitle | A Study of... | Optional |
 | articleAbstract | No | Article abstract | This paper examines... | Optional |
