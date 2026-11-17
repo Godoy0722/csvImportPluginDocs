@@ -180,8 +180,8 @@ Make sure to follow this CSV structure with all headers present, including the n
 `datePublished` is required for every article. What that date means depends on `submissionStatus`:
 
 - **Published**, or an empty status: readers can see the article on its issue. `datePublished` is the date the article was published, and it is also the date the article was submitted. `articleViews` and `galleyViews` are saved.
-- **Queued**: the article stays in the editorial workflow. Readers do not see it. The issue remains selected on the article. `datePublished` is saved only as the date the article was submitted. The article has no publication date. `articleViews` and `galleyViews` are ignored, and the row is still imported.
-- **Scheduled**: same as queued for readers, for `datePublished`, and for those ignored view counts. The article is marked scheduled for its issue.
+- **Queued**: the article stays in the editorial workflow in the Production stage. Readers do not see it. The issue remains selected on the article. `datePublished` is saved only as the date the article was submitted. The article has no publication date. `articleViews` and `galleyViews` are ignored, and the row is still imported.
+- **Scheduled**: the article stays in the editorial workflow with the 'Scheduled for Publication' status. Readers do not see it. For `datePublished`, and for those ignored view counts. The article is marked scheduled for its issue.
 - Any other word is rejected. That row is listed in the invalid CSV with the status error. The other rows in the file are still imported.
 - An issue that contains a published article stays a public issue, and only its published articles appear on the public table of contents.
 - An issue with no published article stays a future issue.
